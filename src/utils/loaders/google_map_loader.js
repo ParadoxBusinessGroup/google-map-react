@@ -1,7 +1,4 @@
-import find from 'lodash/collection/find';
-import reduce from 'lodash/collection/reduce';
-import { Promise } from 'es6-promise';
-
+/* eslint-disable no-console */
 let $script_ = null;
 
 let loadPromise_;
@@ -14,7 +11,7 @@ const _customPromise = new Promise(resolve => {
 // TODO add libraries language and other map options
 export default function googleMapLoader(bootstrapURLKeys) {
   if (!$script_) {
-    $script_ = require('scriptjs');
+    $script_ = require('scriptjs'); // eslint-disable-line
   }
 
   // call from outside google-map-react
@@ -48,17 +45,20 @@ export default function googleMapLoader(bootstrapURLKeys) {
     };
 
     if (process.env.NODE_ENV !== 'production') {
-      if (find(Object.keys(bootstrapURLKeys), 'callback')) {
-        console.error('"callback" key in bootstrapURLKeys is not allowed, ' + // eslint-disable-line
-                      'use onGoogleApiLoaded property instead');
-        throw new Error('"callback" key in bootstrapURLKeys is not allowed, ' +
-                        'use onGoogleApiLoaded property instead');
+      if (Object.keys(bootstrapURLKeys).indexOf('callback') > -1) {
+        console.error(
+          '"callback" key in bootstrapURLKeys is not allowed, ' + // eslint-disable-line
+            'use onGoogleApiLoaded property instead'
+        );
+        throw new Error(
+          '"callback" key in bootstrapURLKeys is not allowed, ' +
+            'use onGoogleApiLoaded property instead'
+        );
       }
     }
 
-    const queryString = reduce(
-      Object.keys(bootstrapURLKeys),
-      (r, key) => r + `&${key}=${bootstrapURLKeys[key]}`,
+    const queryString = Object.keys(bootstrapURLKeys).reduce(
+      (r, key) => `${r}&${key}=${bootstrapURLKeys[key]}`,
       ''
     );
 
@@ -66,7 +66,7 @@ export default function googleMapLoader(bootstrapURLKeys) {
       `https://maps.googleapis.com/maps/api/js?callback=_$_google_map_initialize_$_${queryString}`,
       () =>
         typeof window.google === 'undefined' &&
-          reject(new Error('google map initialization error (not loaded)'))
+        reject(new Error('google map initialization error (not loaded)'))
     );
   });
 
